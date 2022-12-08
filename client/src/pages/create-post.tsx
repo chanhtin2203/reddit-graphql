@@ -17,6 +17,28 @@ const CreatePost = () => {
   const onCreatePostSubmit = async (values: CreatePostInput) => {
     await createPost({
       variables: { createPostInput: values },
+      update(cache, { data }) {
+        cache.modify({
+          fields: {
+            posts(existing) {
+              if (data?.createPost.success && data.createPost.post) {
+                // Post: new_id
+                const newPostRef = cache.identify(data.createPost.post);
+
+                const newPostsAfterCreation = {
+                  ...existing,
+                  totalCount: existing.totalCount + 1,
+                  paginatedPosts: [
+                    { __ref: newPostRef },
+                    ...existing.paginatedPosts,
+                  ],
+                };
+                return newPostsAfterCreation;
+              }
+            },
+          },
+        });
+      },
     });
     router.push("/");
   };

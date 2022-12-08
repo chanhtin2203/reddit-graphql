@@ -14,8 +14,9 @@ import NextLink from "next/link";
 import Layout from "../components/Layout";
 import PostEditDeleteButtons from "../components/PostEditDeleteButtons";
 import { NetworkStatus } from "@apollo/client";
+import { GetStaticProps } from "next";
 
-const limit = 2;
+export const limit = 2;
 
 const Index = () => {
   const { data, loading, fetchMore, networkStatus } = usePostsQuery({
@@ -75,7 +76,7 @@ const Index = () => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const apolloClient = initializeApollo();
 
   await apolloClient.query({
